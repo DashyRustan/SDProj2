@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('R (1).jpg') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+        }
+        .title {
+            font-size: 80px;
+            font-weight: bold;
+            color: white;
+            text-shadow: -3px -3px 5px black, 3px 3px 5px black;
+            margin-top: 50px;
+        }
+        .form-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            display: inline-block;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            color: white;
+            font-size: 20px;
+        }
+        input[type="text"], input[type="password"] {
+            padding: 10px;
+            font-size: 18px;
+            width: 250px;
+            border-radius: 5px;
+            border: none;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px;
+            margin: 20px;
+            background-color: yellow;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 50px;
+            text-decoration: none;
+            color: black;
+        }
+        .btn:hover {
+            background-color: gold;
+        }
+    </style>
+    <script>
+        function handleFormSubmission(event) {
+            event.preventDefault(); // Prevent the default form submission
+            // Redirect to the admin dashboard page
+            window.location.href = "admin-dashboard.html";
+        }
+    </script>
+</head>
+<body>
+    <h1 class="title">ADMIN</h1>
+    
+    <div class="form-container">
+        <form onsubmit="handleFormSubmission(event)">
+            <div class="form-group">
+                <label for="admin-id">Admin ID:</label>
+                <input type="text" id="admin-id" name="admin-id" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+    </div>
+</body>
+</html>

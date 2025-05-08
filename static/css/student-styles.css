@@ -1,0 +1,295 @@
+:root {
+    --primary-color: #4a6fa5;
+    --secondary-color: #166088;
+    --accent-color: #ffd166;
+    --dark-color: #0a1128;
+    --light-color: #f8f9fa;
+    --error-color: #e63946;
+    --success-color: #2a9d8f;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+    background-size: cover;
+    color: var(--light-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    margin: 2rem 0;
+    background: linear-gradient(to right, var(--accent-color), #f8f9fa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-align: center;
+    padding: 0 1rem;
+}
+
+.form-container {
+    width: 90%;
+    max-width: 600px;
+    margin: 1rem auto 3rem;
+    background: rgba(10, 17, 40, 0.85);
+    padding: 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    text-align: left;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--light-color);
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(255, 209, 102, 0.3);
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: var(--light-color);
+    padding-right: 30px;
+    cursor: pointer;
+}
+
+select option {
+    background-color: var(--dark-color);
+    color: var(--light-color);
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper::after {
+    content: '\f078';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    color: var(--accent-color);
+    pointer-events: none;
+}
+
+.input-icon {
+    position: absolute;
+    right: 15px;
+    top: 40px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.btn {
+    width: auto;
+    padding: 15px 30px;
+    background-color: var(--accent-color);
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 8px;
+    color: var(--dark-color);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn:hover {
+    background-color: #ffc233;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 209, 102, 0.4);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+    text-align: left;
+    display: none;
+}
+
+.success-message {
+    display: none;
+    background-color: var(--success-color);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.5rem;
+    }
+    
+    .form-container {
+        padding: 1.5rem;
+        width: 85%;
+    }
+}
+
+/* Enhanced form group animations */
+.form-group {
+    transform: translateY(20px);
+    opacity: 0;
+    animation: slideIn 0.5s ease forwards;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+.form-group:nth-child(4) { animation-delay: 0.4s; }
+.form-group:nth-child(5) { animation-delay: 0.5s; }
+.form-group:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes slideIn {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Enhanced input interactions */
+input:focus ~ .input-icon,
+select:focus ~ .select-wrapper::after {
+    color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+.input-icon {
+    transition: all 0.3s ease;
+}
+
+/* Enhanced button animations */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn:hover::before {
+    width: 300%;
+    height: 300%;
+}
+
+/* Enhanced error message animations */
+.error-message {
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.error-message.show {
+    transform: scaleX(1);
+}
+
+/* Enhanced success message animations */
+.success-message {
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+.success-message.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.btn-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: var(--secondary-color);
+    transform: translateX(-5px);
+}
+
+.btn-back i {
+    font-size: 16px;
+}

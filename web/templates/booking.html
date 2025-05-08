@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../../static/css/booking-styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Booking Management</h1>
+        <a href="admin-dashboard.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <div class="status-tabs">
+        <div class="status-tab active" data-status="pending">
+            <i class="fas fa-clock"></i>
+            Pending
+            <span class="status-count" id="pending-count">0</span>
+        </div>
+        <div class="status-tab" data-status="ongoing">
+            <i class="fas fa-spinner"></i>
+            Ongoing
+            <span class="status-count" id="ongoing-count">0</span>
+        </div>
+        <div class="status-tab" data-status="finished">
+            <i class="fas fa-check-circle"></i>
+            Finished
+            <span class="status-count" id="finished-count">0</span>
+        </div>
+    </div>
+
+    <div class="bookings-container">
+        <table class="booking-table">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Student ID</th>
+                    <th>Item</th>
+                    <th>Professor's Signature</th>
+                    <th>Booking Time</th>
+                    <th>Status</th>
+                    <th>Usage Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="bookings-body">
+                <!-- Bookings will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="../../static/js/booking-script.js"></script>
+</body>
+</html>

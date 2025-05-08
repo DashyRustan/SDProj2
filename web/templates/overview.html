@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Inventory Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../../static/css/overview-styles.css">
+    <script src="../../static/js/overview.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Dashboard</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active">
+                    <i class="fas fa-chart-line"></i>
+                    <a href="overview.html" style="text-decoration: none; color: inherit;">Overview</a>
+                </li>
+                <li class="nav-item">
+                    <i class="fas fa-box"></i>
+                    <a href="inventory.html" style="text-decoration: none; color: inherit;">Inventory</a>
+                </li>
+                <li class="nav-item">
+                    <i class="fas fa-history"></i>
+                    <a href="usage.html" style="text-decoration: none; color: inherit;">Usage History</a>
+                </li>
+                <li class="nav-item">
+                    <i class="fas fa-arrow-left"></i>
+                    <a href="admin-dashboard.html" style="text-decoration: none; color: inherit;">Back</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <h1>Inventory Overview</h1>
+                <div class="date">
+                    <i class="far fa-calendar"></i>
+                    <span id="current-date"></span>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Items</h3>
+                    <div class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Items in Use</h3>
+                    <div class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Available Items</h3>
+                    <div class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Bookings</h3>
+                    <div class="stat-value">0</div>
+                </div>
+            </div>
+
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Usage Statistics</h3>
+                    <canvas id="usageChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Availability Status</h3>
+                    <canvas id="availabilityChart"></canvas>
+                </div>
+            </div>
+
+            <div class="inventory-section">
+                <div class="inventory-header">
+                    <h2>Inventory Management</h2>
+                    <button class="add-item-btn" onclick="openAddItemModal()">
+                        <i class="fas fa-plus"></i>
+                        Add New Item
+                    </button>
+                </div>
+                <table class="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Category</th>
+                            <th>Class</th>
+                            <th>Qty</th>
+                            <th>Item Description</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-body">
+                        <!-- Inventory items will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Item Modal -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Add New Item</h2>
+            <form id="itemForm">
+                <div class="form-group">
+                    <label for="itemName">Item Name</label>
+                    <input type="text" id="itemName" required>
+                </div>
+                <div class="form-group">
+                    <label for="itemQuantity">Quantity</label>
+                    <input type="number" id="itemQuantity" required min="1">
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" onclick="closeModal()" class="action-btn">Cancel</button>
+                    <button type="submit" class="action-btn edit-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Initialize charts
+        function initializeCharts() {
+            // Usage Statistics Chart
+            const usageCtx = document.getElementById('usageChart').getContext('2d');
+            new Chart(usageCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Times Used',
+                        data: [],
+                        backgroundColor: '#3498db'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Availability Chart
+            const availabilityCtx = document.getElementById('availabilityChart').getContext('2d');
+            new Chart(availabilityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Available', 'In Use'],
+                    datasets: [{
+                        data: [0, 0],
+                        backgroundColor: ['#2ecc71', '#e74c3c']
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+
+        // Update the updateInventoryTable function
+        async function updateInventoryTable() {
+            const tbody = document.getElementById('inventory-body');
+            tbody.innerHTML = '';
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/inventory');
+                const items = await response.json();
+                
+                items.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.no}</td>
+                        <td>${item.category}</td>
+                        <td>${item.class_name}</td>
+                        <td>${item.qty}</td>
+                        <td>${item.item_description}</td>
+                        <td>${item.remarks}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching inventory:', error);
+            }
+        }
+
+        // Modal functions
+        function openAddItemModal() {
+            document.getElementById('modal-title').textContent = 'Add New Item';
+            document.getElementById('itemForm').reset();
+            document.getElementById('itemModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('itemModal').style.display = 'none';
+        }
+
+        // Form submission
+        document.getElementById('itemForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const newItem = {
+                no: parseInt(document.getElementById('itemNo').value),
+                category: document.getElementById('itemCategory').value,
+                class_name: document.getElementById('itemClass').value,
+                qty: document.getElementById('itemQty').value,
+                item_description: document.getElementById('itemDescription').value,
+                remarks: document.getElementById('itemRemarks').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/api/inventory', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newItem)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to add item');
+                }
+
+                await updateInventoryTable();
+                initializeCharts();
+                closeModal();
+            } catch (error) {
+                console.error('Error adding item:', error);
+                alert('Failed to add item');
+            }
+        });
+
+        // Set current date
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString();
+
+        // Initialize the dashboard
+        window.onload = function() {
+            updateInventoryTable();
+            initializeCharts();
+        };
+    </script>
+    <script src="../static/js/overview.js"></script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../../static/css/overview-styles.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #2ecc71;
+            --text-color: #333;
+            --light-bg: #f5f6fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-color);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar-header {
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .nav-item {
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .inventory-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .inventory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .add-item-btn {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .inventory-table th,
+        .inventory-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .inventory-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .edit-btn {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .delete-btn {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-section select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Dashboard</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <a href="overview.html" style="text-decoration: none; color: inherit;">Overview</a>
+                </li>
+                <li class="nav-item active">
+                    <i class="fas fa-box"></i>
+                    <a href="inventory.html" style="text-decoration: none; color: inherit;">Inventory</a>
+                </li>
+                <li class="nav-item">
+                    <i class="fas fa-history"></i>
+                    <a href="usage.html" style="text-decoration: none; color: inherit;">Usage History</a>
+                </li>
+                <li class="nav-item">
+                    <i class="fas fa-arrow-left"></i>
+                    <a href="admin-dashboard.html" style="text-decoration: none; color: inherit;">Back</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <h1>Inventory Management</h1>
+            </div>
+
+            <div class="inventory-section">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search items..." id="searchInput">
+                </div>
+
+                <div class="filter-section">
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="tools">Tools</option>
+                        <option value="equipment">Equipment</option>
+                    </select>
+                    <select id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="available">Available</option>
+                        <option value="in-use">In Use</option>
+                        <option value="maintenance">Maintenance</option>
+                    </select>
+                </div>
+
+                <div class="inventory-header">
+                    <h2>Inventory Items</h2>
+                    <button class="add-item-btn" onclick="openAddItemModal()">
+                        <i class="fas fa-plus"></i>
+                        Add New Item
+                    </button>
+                </div>
+
+                <table class="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Category</th>
+                            <th>Class</th>
+                            <th>Qty</th>
+                            <th>Item Description</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-body">
+                        <!-- Items will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/js/overview.js"></script>
+</body>
+</html>

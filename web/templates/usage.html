@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usage History - Inventory Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../../static/css/usage-styles.css">
+    <script src="../../static/js/usage-script.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Dashboard</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <a href="overview.html" style="text-decoration: none; color: inherit;">Overview</a>
+                </li>
+                <li class="nav-item">
+                    <i class="fas fa-box"></i>
+                    <a href="inventory.html" style="text-decoration: none; color: inherit;">Inventory</a>
+                </li>
+                <li class="nav-item active">
+                    <i class="fas fa-history"></i>
+                    <a href="usage.html" style="text-decoration: none; color: inherit;">Usage History</a>
+                </li>
+                <li class="nav-item">
+                    <i class="fas fa-arrow-left"></i>
+                    <a href="admin-dashboard.html" style="text-decoration: none; color: inherit;">Back</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <h1>Usage History</h1>
+                <div class="date">
+                    <i class="far fa-calendar"></i>
+                    <span id="current-date"></span>
+                </div>
+            </div>
+
+            <div class="usage-section">
+                <div class="filter-section">
+                    <input type="date" id="startDate">
+                    <input type="date" id="endDate">
+                    <select id="itemFilter">
+                        <option value="">All Items</option>
+                    </select>
+                    <select id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="returned">Returned</option>
+                    </select>
+                    <button onclick="applyFilters()" class="action-btn">Apply Filters</button>
+                </div>
+
+                <table class="usage-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Item Name</th>
+                            <th>Student ID</th>
+                            <th>Student Name</th>
+                            <th>Borrowed Time</th>
+                            <th>Return Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usage-body">
+                        <!-- Usage history will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the page
+        function initializePage() {
+            // Set current date
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString();
+            
+            // Load usage history from localStorage
+            updateUsageTable();
+        }
+
+        // Update usage table
+        function updateUsageTable() {
+            const tbody = document.getElementById('usage-body');
+            tbody.innerHTML = '';
+            
+            // Get usage history from localStorage
+            const usageHistory = JSON.parse(localStorage.getItem('usageHistory')) || [];
+            
+            usageHistory.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${new Date(entry.date).toLocaleDateString()}</td>
+                    <td>${entry.itemName}</td>
+                    <td>${entry.studentId}</td>
+                    <td>${entry.studentName}</td>
+                    <td>${entry.borrowedTime}</td>
+                    <td>${entry.returnTime || '-'}</td>
+                    <td>
+                        <span class="status-badge ${entry.status === 'active' ? 'status-active' : 'status-returned'}">
+                            ${entry.status}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Filter functionality
+        function applyFilters() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const itemFilter = document.getElementById('itemFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            const rows = document.querySelectorAll('#usage-body tr');
+            
+            rows.forEach(row => {
+                const date = new Date(row.cells[0].textContent);
+                const item = row.cells[1].textContent;
+                const status = row.cells[6].textContent.trim().toLowerCase();
+                
+                const dateMatch = (!startDate || date >= new Date(startDate)) && 
+                                (!endDate || date <= new Date(endDate));
+                const itemMatch = !itemFilter || item === itemFilter;
+                const statusMatch = !statusFilter || status === statusFilter;
+                
+                row.style.display = dateMatch && itemMatch && statusMatch ? '' : 'none';
+            });
+        }
+
+        // Initialize the page when loaded
+        window.onload = initializePage;
+    </script>
+    <script src="../static/js/usage-script.js"></script>
+</body>
+</html>
