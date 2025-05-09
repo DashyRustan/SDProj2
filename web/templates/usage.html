@@ -6,8 +6,8 @@
     <title>Usage History - Inventory Management</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../../static/css/usage-styles.css">
-    <script src="../../static/js/usage-script.js"></script>
+    <link rel="stylesheet" href="../static/css/usage-styles.css">
+    <script src="../static/js/usage-script.js"></script>
 </head>
 <body>
     <div class="dashboard">
@@ -24,6 +24,10 @@
                     <i class="fas fa-box"></i>
                     <a href="inventory.html" style="text-decoration: none; color: inherit;">Inventory</a>
                 </li>
+                <li class="nav-item">
+                    <i class="fas fa-box-open"></i>
+                    <a href="consumables.html" style="text-decoration: none; color: inherit;">Consumables</a>
+                </li>
                 <li class="nav-item active">
                     <i class="fas fa-history"></i>
                     <a href="usage.html" style="text-decoration: none; color: inherit;">Usage History</a>
@@ -34,7 +38,6 @@
                 </li>
             </ul>
         </div>
-
         <div class="main-content">
             <div class="header">
                 <h1>Usage History</h1>
@@ -63,85 +66,31 @@
                     <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Item Name</th>
-                            <th>Student ID</th>
+                            <th>Item</th>
                             <th>Student Name</th>
-                            <th>Borrowed Time</th>
+                            <th>Student ID</th>
+                            <th>Reservation Time</th>
                             <th>Return Time</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody id="usage-body">
-                        <!-- Usage history will be populated here -->
+                        <!-- Usage data will be populated here -->
                     </tbody>
                 </table>
             </div>
+
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Monthly Usage Trends</h3>
+                    <canvas id="monthlyUsageChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Most Used Items</h3>
+                    <canvas id="popularItemsChart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
-
-    <script>
-        // Initialize the page
-        function initializePage() {
-            // Set current date
-            document.getElementById('current-date').textContent = new Date().toLocaleDateString();
-            
-            // Load usage history from localStorage
-            updateUsageTable();
-        }
-
-        // Update usage table
-        function updateUsageTable() {
-            const tbody = document.getElementById('usage-body');
-            tbody.innerHTML = '';
-            
-            // Get usage history from localStorage
-            const usageHistory = JSON.parse(localStorage.getItem('usageHistory')) || [];
-            
-            usageHistory.forEach(entry => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${new Date(entry.date).toLocaleDateString()}</td>
-                    <td>${entry.itemName}</td>
-                    <td>${entry.studentId}</td>
-                    <td>${entry.studentName}</td>
-                    <td>${entry.borrowedTime}</td>
-                    <td>${entry.returnTime || '-'}</td>
-                    <td>
-                        <span class="status-badge ${entry.status === 'active' ? 'status-active' : 'status-returned'}">
-                            ${entry.status}
-                        </span>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // Filter functionality
-        function applyFilters() {
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            const itemFilter = document.getElementById('itemFilter').value;
-            const statusFilter = document.getElementById('statusFilter').value;
-            
-            const rows = document.querySelectorAll('#usage-body tr');
-            
-            rows.forEach(row => {
-                const date = new Date(row.cells[0].textContent);
-                const item = row.cells[1].textContent;
-                const status = row.cells[6].textContent.trim().toLowerCase();
-                
-                const dateMatch = (!startDate || date >= new Date(startDate)) && 
-                                (!endDate || date <= new Date(endDate));
-                const itemMatch = !itemFilter || item === itemFilter;
-                const statusMatch = !statusFilter || status === statusFilter;
-                
-                row.style.display = dateMatch && itemMatch && statusMatch ? '' : 'none';
-            });
-        }
-
-        // Initialize the page when loaded
-        window.onload = initializePage;
-    </script>
-    <script src="../static/js/usage-script.js"></script>
 </body>
 </html>

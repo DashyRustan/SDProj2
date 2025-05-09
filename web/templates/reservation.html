@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Management</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../../static/css/booking-styles.css">
+    <title>Reservation Management</title>
+    <link rel="stylesheet" href="../static/css/reservation-styles.css">
 </head>
 <body>
     <div class="header">
-        <h1>Booking Management</h1>
+        <h1>Reservation Management</h1>
         <a href="admin-dashboard.html" class="back-btn">
             <i class="fas fa-arrow-left"></i>
             Back to Dashboard
@@ -42,7 +41,7 @@
                     <th>Student ID</th>
                     <th>Item</th>
                     <th>Professor's Signature</th>
-                    <th>Booking Time</th>
+                    <th>Reservation Time</th>
                     <th>Status</th>
                     <th>Usage Time</th>
                     <th>Actions</th>
@@ -50,10 +49,25 @@
             </thead>
             <tbody id="bookings-body">
                 <!-- Bookings will be populated here -->
+                <tr>
+                    <td>Student Name</td>
+                    <td>Student ID</td>
+                    <td>Item</td>
+                    <td>Professor's Signature</td>
+                    <td>Reservation Time</td>
+                    <td>Status</td>
+                    <td>Usage Time</td>
+                    <td>
+                        <button class="accept-btn" onclick="acceptReservation()">Accept</button>
+                        <button class="confirm-return-btn" onclick="confirmReturn()">Confirm Return</button>
+                        <button class="delete-btn" onclick="deleteReservation()">Delete</button>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
 
-    <script src="../../static/js/booking-script.js"></script>
+
+    <script src="../static/js/reservation-script.js"></script>
 </body>
 </html>

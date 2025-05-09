@@ -81,23 +81,23 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get user data from localStorage
         const userData = JSON.parse(localStorage.getItem('currentUser')) || {};
         
-        const booking = {
+        const reservation = {
             studentName: userData.name,
             studentId: userData.studentId,
             items: Array.from(cart.entries()).map(([item, qty]) => `${item} (${qty})`),
             professorEmail: professorEmail,
-            bookingTime: new Date().toISOString(),
+            reservationTime: new Date().toISOString(),
             status: 'pending'
         };
         
-        // Save booking
-        const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-        bookings.push(booking);
-        localStorage.setItem('bookings', JSON.stringify(bookings));
+        // Save reservation
+        const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+        reservations.push(reservation);
+        localStorage.setItem('reservations', JSON.stringify(reservations));
         
         // Show success message and redirect
-        alert('Booking submitted successfully!');
-        window.location.href = 'bookings.html';
+        alert('Reservation submitted successfully!');
+        window.location.href = 'reservations.html';
     };
     
     // Initialize displays
@@ -198,83 +198,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // Update confirm booking function
-    window.confirmBooking = function() {
-        const signaturePicture = document.getElementById('signature-picture').files[0];
-        
-        try {
-            // Validate inputs
-            if (!signaturePicture) {
-                alert('Please upload professor\'s signature picture');
-                return;
-            }
-            
-            if (signaturePad.isEmpty()) {
-                alert('Please add professor\'s e-signature');
-                return;
-            }
-            
-            if (cart.size === 0) {
-                alert('Please select at least one item');
-                return;
-            }
-            
-            // Get user data from localStorage
-            const userData = JSON.parse(localStorage.getItem('currentUser')) || {};
-            if (!userData.studentId) {
-                alert('Please log in to make a booking');
-                return;
-            }
-            
-            // Convert signature to data URL
-            const signatureData = signaturePad.toDataURL();
-            
-            // Create FileReader for signature picture
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const booking = {
-                    studentName: userData.name,
-                    studentId: userData.studentId,
-                    items: Array.from(cart.entries()).map(([item, qty]) => `${item} (${qty})`),
-                    professorPicture: e.target.result,
-                    professorSignature: signatureData,
-                    bookingTime: new Date().toISOString(),
-                    status: 'pending'
-                };
-                
-                try {
-                    // Save booking
-                    const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-                    bookings.push(booking);
-                    localStorage.setItem('bookings', JSON.stringify(bookings));
-                    
-                    // Clear cart and signature
-                    cart.clear();
-                    signaturePad.clear();
-                    
-                    // Show success message and redirect
-                    alert('Booking submitted successfully!');
-                    window.location.href = 'bookings.html';
-                } catch (error) {
-                    alert('Error saving booking. Please try again.');
-                    console.error('Booking save error:', error);
-                }
-            };
-            
-            reader.onerror = function() {
-                alert('Error reading signature file. Please try again.');
-            };
-            
-            reader.readAsDataURL(signaturePicture);
-        } catch (error) {
-            alert('An error occurred. Please try again.');
-            console.error('Confirmation error:', error);
-        }
-    };
-    
     // Handle picture preview
-    const pictureInput = document.getElementById('professor-picture');
-    const picturePreview = document.getElementById('picture-preview');
+    const pictureInput = document.getElementById('signature-picture');
+    const picturePreview = document.getElementById('signature-preview');
     
     pictureInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
@@ -288,22 +214,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Clear signature
-    window.clearSignature = function() {
-        signaturePad.clear();
-    };
-    
     // Update confirm booking function
     window.confirmBooking = function() {
-        const professorPicture = document.getElementById('professor-picture').files[0];
+        const signaturePicture = document.getElementById('signature-picture').files[0];
+        let signatureData = null;
         
-        if (!professorPicture) {
-            alert('Please upload professor\'s picture');
-            return;
-        }
-        
-        if (signaturePad.isEmpty()) {
-            alert('Please add professor\'s signature');
+        // Check if either signature method is provided
+        if (!signaturePicture && signaturePad.isEmpty()) {
+            alert('Please provide professor\'s signature (either draw or upload)');
             return;
         }
         
@@ -314,33 +232,154 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Get user data from localStorage
         const userData = JSON.parse(localStorage.getItem('currentUser')) || {};
+        if (!userData.studentId) {
+            alert('Please log in to make a booking');
+            return;
+        }
         
-        // Convert signature to data URL
-        const signatureData = signaturePad.toDataURL();
-        
-        // Create FileReader for picture
-        const reader = new FileReader();
-        reader.onload = function(e) {
+        // Function to process the booking
+        const processBooking = (signatureImage) => {
             const booking = {
                 studentName: userData.name,
                 studentId: userData.studentId,
                 items: Array.from(cart.entries()).map(([item, qty]) => `${item} (${qty})`),
-                professorPicture: e.target.result,
-                professorSignature: signatureData,
+                professorSignature: signatureImage,
                 bookingTime: new Date().toISOString(),
                 status: 'pending'
             };
             
-            // Save booking
-            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-            bookings.push(booking);
-            localStorage.setItem('bookings', JSON.stringify(bookings));
-            
-            // Show success message and redirect
-            alert('Booking submitted successfully!');
-            window.location.href = 'bookings.html';
+            try {
+                // Save booking
+                const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+                bookings.push(booking);
+                localStorage.setItem('bookings', JSON.stringify(bookings));
+                
+                // Update inventory
+                cart.forEach((qty, item) => {
+                    inventory[item] -= qty;
+                });
+                
+                // Clear cart and signature
+                cart.clear();
+                signaturePad.clear();
+                document.getElementById('signature-picture').value = '';
+                document.getElementById('signature-preview').style.display = 'none';
+                updateInventoryDisplays();
+                
+                // Show success message and redirect
+                alert('Reservation submitted successfully!');
+                // After saving reservation, redirect to reservations page
+                window.location.href = "reservations.html";
+            } catch (error) {
+                alert('Error saving reservation. Please try again.');
+                console.error('Reservation save error:', error);
+            }
         };
         
-        reader.readAsDataURL(professorPicture);
+        // Process signature based on method used
+        if (signaturePicture) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                processBooking(e.target.result);
+            };
+            reader.onerror = function() {
+                alert('Error reading signature file. Please try again.');
+            };
+            reader.readAsDataURL(signaturePicture);
+        } else {
+            processBooking(signaturePad.toDataURL());
+        }
     };
 });
+
+// Function to confirm booking/reservation
+function confirmBooking() {
+    const cartItems = getCartItems();
+    if (cartItems.length === 0) {
+        alert('Please add at least one item to your reservation.');
+        return;
+    }
+
+    // Get signature
+    const signatureData = getSignatureData();
+    if (!signatureData) {
+        alert('Professor\'s signature is required.');
+        return;
+    }
+
+    // Get user data (assuming it's stored in localStorage)
+    const userData = JSON.parse(localStorage.getItem('currentUser')) || {};
+    if (!userData.studentId || !userData.name) {
+        alert('Please log in to make a reservation.');
+        return;
+    }
+
+    // Create reservation object
+    const reservation = {
+        studentName: userData.name,
+        studentId: userData.studentId,
+        items: cartItems,
+        signaturePicture: signatureData,
+        reservationTime: new Date().toISOString(),
+        status: 'pending'
+    };
+
+    // Save to localStorage
+    const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+    reservations.push(reservation);
+    localStorage.setItem('reservations', JSON.stringify(reservations));
+
+    // Clear cart
+    clearCart();
+    
+    // Show success message
+    alert('Reservation submitted successfully! Please wait for admin approval.');
+    
+    // Redirect to reservations page
+    window.location.href = 'reservations.html';
+}
+
+// Helper function to get signature data
+function getSignatureData() {
+    // Check if signature pad has content
+    if (signaturePad && !signaturePad.isEmpty()) {
+        return signaturePad.toDataURL();
+    }
+    
+    // Check if signature image was uploaded
+    const signaturePreview = document.getElementById('signature-preview');
+    if (signaturePreview && signaturePreview.style.display !== 'none') {
+        return signaturePreview.src;
+    }
+    
+    return null;
+}
+
+// Helper function to get cart items
+function getCartItems() {
+    const cartList = document.getElementById('cart-list');
+    const items = [];
+    
+    if (cartList) {
+        const itemElements = cartList.querySelectorAll('li');
+        itemElements.forEach(item => {
+            const itemName = item.textContent.split(' x')[0].trim();
+            items.push(itemName);
+        });
+    }
+    
+    return items;
+}
+
+// Helper function to clear cart
+function clearCart() {
+    const cartList = document.getElementById('cart-list');
+    if (cartList) {
+        cartList.innerHTML = '';
+    }
+    
+    // Reset all quantity displays
+    document.querySelectorAll('.quantity').forEach(elem => {
+        elem.textContent = '0';
+    });
+}

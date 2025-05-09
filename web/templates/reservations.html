@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Reservations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="../static/css/reservations-style.css">
+</head>
+<body>
+    <div class="header animate__animated animate__fadeInDown">
+        <div class="header-left">
+            <img src="../JRU.png" alt="JRU Logo" onerror="this.src='../placeholder-image.png'" class="logo">
+            <div class="header-text">
+                <h2>JOSE RIZAL UNIVERSITY</h2>
+                <h1 class="title">My Equipment Reservations</h1>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="student.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+            <button class="refresh-btn" onclick="loadReservations()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="filters animate__animated animate__fadeInUp">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by name, ID, or items...">
+            </div>
+            <div class="status-filter">
+                <select id="statusFilter">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="ongoing">Ongoing</option>
+                    <option value="finished">Finished</option>
+                </select>
+            </div>
+            <div class="date-filter">
+                <input type="date" id="dateFilter" class="date-input">
+            </div>
+        </div>
+        <div class="status-summary animate__animated animate__fadeInUp">
+            <div class="status-badge-container">
+                <span class="status-count pending">0 Pending</span>
+                <span class="status-count ongoing">0 Ongoing</span>
+                <span class="status-count finished">0 Finished</span>
+            </div>
+        </div>
+        <div id="reservations-list" class="reservations-grid">
+            <!-- Reservations will be populated here -->
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="../static/js/reservations.js"></script>
+</body>
+</html>
