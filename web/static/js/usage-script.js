@@ -167,4 +167,42 @@ function initializePopularItemsChart() {
             }
         }
     });
+
+    // --- Add this block to set the label for the most used item's last usage date ---
+    // Mock usage data for demonstration (replace with your real data logic)
+    const usageData = [
+        { item: 'Microscope', date: '2024-06-06' },
+        { item: 'Oscilloscope', date: '2024-06-04' },
+        { item: 'Multimeter', date: '2024-05-29' },
+        { item: 'Function Generator', date: '2024-05-20' },
+        { item: 'Power Supply', date: '2024-05-10' }
+    ];
+
+    // Find the most used item (the one with the highest count in the chart)
+    const mostUsedIndex = popularItemsChart.data.datasets[0].data.indexOf(
+        Math.max(...popularItemsChart.data.datasets[0].data)
+    );
+    const mostUsedItem = popularItemsChart.data.labels[mostUsedIndex];
+
+    // Find the last usage date for the most used item
+    const lastUsageEntry = usageData.find(u => u.item === mostUsedItem);
+    let labelText = "Last used: Unknown";
+    if (lastUsageEntry) {
+        labelText = "Last used: " + getRelativeDateLabel(lastUsageEntry.date);
+    }
+    document.getElementById('most-used-label').textContent = labelText;
+}
+
+// Helper function to get relative date label
+function getRelativeDateLabel(dateString) {
+    const now = new Date();
+    const last = new Date(dateString);
+    const diffTime = now - last;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return "today";
+    if (diffDays === 1) return "yesterday";
+    if (diffDays < 7) return "this week";
+    if (diffDays < 30) return "last week";
+    return "last month or earlier";
 }

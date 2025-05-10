@@ -8,7 +8,7 @@ def create_app():
     app.config['SECRET_KEY'] = '12345'
     
     # Database configurations
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/student_portal'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:12345@localhost/student_forms'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     # Initialize database
