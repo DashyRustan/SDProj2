@@ -5,10 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservation Management</title>
     <link rel="stylesheet" href="../static/css/reservation-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="header">
-        <h1>Reservation Management</h1>
+        <div class="header-left">
+            <h1>Reservation Management</h1>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search reservations...">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+        </div>
         <a href="admin-dashboard.html" class="back-btn">
             <i class="fas fa-arrow-left"></i>
             Back to Dashboard
@@ -34,39 +41,26 @@
     </div>
 
     <div class="bookings-container">
-        <table class="booking-table">
-            <thead>
-                <tr>
-                    <th>Student Name</th>
-                    <th>Student ID</th>
-                    <th>Item</th>
-                    <th>Professor's Signature</th>
-                    <th>Reservation Time</th>
-                    <th>Status</th>
-                    <th>Usage Time</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="bookings-body">
-                <!-- Bookings will be populated here -->
-                <tr>
-                    <td>Student Name</td>
-                    <td>Student ID</td>
-                    <td>Item</td>
-                    <td>Professor's Signature</td>
-                    <td>Reservation Time</td>
-                    <td>Status</td>
-                    <td>Usage Time</td>
-                    <td>
-                        <button class="accept-btn" onclick="acceptReservation()">Accept</button>
-                        <button class="confirm-return-btn" onclick="confirmReturn()">Confirm Return</button>
-                        <button class="delete-btn" onclick="deleteReservation()">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="booking-table">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Student ID</th>
+                        <th>Item</th>
+                        <th>Professor's Signature</th>
+                        <th>Reservation Time</th>
+                        <th>Status</th>
+                        <th>Usage Time</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bookings-body">
+                    <!-- Bookings will be populated here -->
+                </tbody>
+            </table>
+        </div>
     </div>
-
 
     <script src="../static/js/reservation-script.js"></script>
 </body>

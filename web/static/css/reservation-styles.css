@@ -6,6 +6,10 @@
     --warning-color: #f1c40f;
     --text-color: #333;
     --light-bg: #f5f6fa;
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --hover-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
 }
 
 * {
@@ -25,7 +29,76 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: white;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
     margin-bottom: 30px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.search-container {
+    position: relative;
+    width: 300px;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    border: 2px solid #eee;
+    border-radius: var(--border-radius);
+    font-size: 0.9em;
+    transition: var(--transition);
+}
+
+.search-container input:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    margin: 20px 0;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.booking-table {
+    width: 100%;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.booking-table th {
+    background: var(--primary-color);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.booking-table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.booking-table tr:hover {
+    background: rgba(52, 152, 219, 0.05);
 }
 
 .back-btn {
@@ -49,14 +122,20 @@ body {
 
 .status-tab {
     padding: 10px 20px;
-    background: #fff;
-    border-radius: 8px;
+    background: white;
+    padding: 12px 24px;
+    border-radius: var(--border-radius);
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 10px;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+}
+
+.status-tab:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--hover-shadow);
 }
 
 .status-tab.active {
@@ -197,4 +276,36 @@ body {
     transition: transform 0.3s ease;
     position: relative;
     z-index: 1;
+}
+
+.action-cell button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.accept-btn {
+    background: var(--success-color);
+    color: white;
+}
+
+.confirm-return-btn {
+    background: var(--warning-color);
+    color: var(--text-color);
+}
+
+.delete-btn {
+    background: var(--accent-color);
+    color: white;
+}
+
+.action-cell button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--hover-shadow);
 }

@@ -6,9 +6,272 @@
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="../static/css/admin-styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color:rgb(99, 147, 219);
+            --text-color: #2c3e50;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --hover-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+            --gradient: linear-gradient(135deg, #2980b9, #2c3e50);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background-color);
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--gradient);
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .title {
+            font-size: 2rem;
+            color: white;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .logout-btn {
+            position: fixed;
+            top: 1rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .buttons {
+            margin-top: 120px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .btn:hover::before {
+            opacity: 0.05;
+        }
+
+        .btn i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            z-index: 2;
+            transition: transform 0.3s ease;
+        }
+
+        .btn span {
+            font-size: 1.3rem;
+            font-weight: 600;
+            z-index: 2;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .btn:hover i {
+            transform: scale(1.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--hover-shadow);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from { 
+                transform: scale(0.9) translateY(-20px);
+                opacity: 0;
+            }
+            to { 
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-content h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content p {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.2rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .confirm-btn {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .cancel-btn {
+            background:rgb(191, 177, 24);
+            color: white;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            filter: brightness(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .buttons {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                margin-top: 100px;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .title {
+                font-size: 1.6rem;
+            }
+
+            .logout-btn {
+                right: 1rem;
+                padding: 0.6rem 1rem;
+            }
+
+            .btn {
+                padding: 2rem;
+            }
+
+            .modal-content {
+                padding: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1 class="title">Admin Dashboard</h1>
+    <div class="header">
+        <h1 class="title">Admin Dashboard</h1>
+        <button onclick="showLogoutModal()" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+        </button>
+    </div>
     
     <div class="buttons">
         <a href="reservation.html" class="btn">
@@ -21,6 +284,46 @@
         </a>
     </div>
 
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <h2>Confirm Logout</h2>
+            <p>Are you sure you want to logout from the admin dashboard?</p>
+            <div class="modal-buttons">
+                <button onclick="logout()" class="modal-btn confirm-btn">
+                    <i class="fas fa-sign-out-alt"></i> Yes, Logout
+                </button>
+                <button onclick="closeModal()" class="modal-btn cancel-btn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="../static/js/admin-script.js"></script>
+    <script>
+        function showLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        function logout() {
+            // Clear admin authentication
+            localStorage.removeItem('isAdmin');
+            // Redirect to admin login page
+            window.location.href = 'admin.html';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('logoutModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
 </body>
 </html>

@@ -216,12 +216,24 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Update confirm booking function
     window.confirmBooking = function() {
-        const signaturePicture = document.getElementById('signature-picture').files[0];
-        let signatureData = null;
+        // Get signature data
+        const signaturePad = document.getElementById('signature-pad');
+        const signatureImage = signaturePad ? signaturePad.toDataURL() : null;
+        const uploadedSignature = document.getElementById('signature-preview');
+        const signaturePicture = uploadedSignature && uploadedSignature.style.display !== 'none' ? 
+                                uploadedSignature.src : signatureImage;
         
-        // Check if either signature method is provided
-        if (!signaturePicture && signaturePad.isEmpty()) {
+        // Get reservation date/time
+        const reservationDateTime = document.getElementById('reservationDateTime').value;
+        
+        // Check if all required fields are provided
+        if (!signaturePicture && (!signaturePad || signaturePad.isEmpty())) {
             alert('Please provide professor\'s signature (either draw or upload)');
+            return;
+        }
+        
+        if (!reservationDateTime) {
+            alert('Please select reservation date and time');
             return;
         }
         
@@ -237,58 +249,23 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Function to process the booking
-        const processBooking = (signatureImage) => {
-            const booking = {
-                studentName: userData.name,
-                studentId: userData.studentId,
-                items: Array.from(cart.entries()).map(([item, qty]) => `${item} (${qty})`),
-                professorSignature: signatureImage,
-                bookingTime: new Date().toISOString(),
-                status: 'pending'
-            };
-            
-            try {
-                // Save booking
-                const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-                bookings.push(booking);
-                localStorage.setItem('bookings', JSON.stringify(bookings));
-                
-                // Update inventory
-                cart.forEach((qty, item) => {
-                    inventory[item] -= qty;
-                });
-                
-                // Clear cart and signature
-                cart.clear();
-                signaturePad.clear();
-                document.getElementById('signature-picture').value = '';
-                document.getElementById('signature-preview').style.display = 'none';
-                updateInventoryDisplays();
-                
-                // Show success message and redirect
-                alert('Reservation submitted successfully!');
-                // After saving reservation, redirect to reservations page
-                window.location.href = "reservations.html";
-            } catch (error) {
-                alert('Error saving reservation. Please try again.');
-                console.error('Reservation save error:', error);
-            }
+        const reservation = {
+            studentName: userData.fullName || userData.name,
+            studentId: userData.studentId,
+            items: Array.from(cart.entries()).map(([item, qty]) => `${item} (${qty})`),
+            professorSignature: signaturePicture,
+            reservationTime: new Date(reservationDateTime).toISOString(),
+            status: 'pending'
         };
         
-        // Process signature based on method used
-        if (signaturePicture) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                processBooking(e.target.result);
-            };
-            reader.onerror = function() {
-                alert('Error reading signature file. Please try again.');
-            };
-            reader.readAsDataURL(signaturePicture);
-        } else {
-            processBooking(signaturePad.toDataURL());
-        }
+        // Save reservation
+        const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+        reservations.push(reservation);
+        localStorage.setItem('reservations', JSON.stringify(reservations));
+        
+        // Show success message and redirect
+        alert('Reservation submitted successfully!');
+        window.location.href = 'reservations.html';
     };
 });
 
